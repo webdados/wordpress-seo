@@ -359,8 +359,18 @@ class WPSEO_Breadcrumbs {
 
 	/**
 	 * Determine the crumbs which should form the breadcrumb.
+	 *
+	 * @return void
 	 */
 	private function set_crumbs() {
+		$canonical = WPSEO_Frontend::get_instance()->canonical( false );
+		$cache_key = 'wpseo_bc_' . md5( $canonical );
+		$cache     = wp_cache_get( $cache_key, 'wpseo_breadcrumbs' );
+		if ( $cache ) {
+			$this->crumbs      = $cache;
+			$this->crumb_count = count( $this->crumbs );
+			return;
+		}
 		/** @var WP_Query $wp_query */
 		global $wp_query;
 
@@ -452,6 +462,8 @@ class WPSEO_Breadcrumbs {
 		 * @api array $crumbs The crumbs array.
 		 */
 		$this->crumbs = apply_filters( 'wpseo_breadcrumb_links', $this->crumbs );
+
+		wp_cache_set( $cache_key, $this->crumbs, 'wpseo_breadcrumbs' );
 
 		$this->crumb_count = count( $this->crumbs );
 	}
