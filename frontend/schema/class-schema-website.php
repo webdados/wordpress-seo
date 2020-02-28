@@ -108,11 +108,15 @@ class WPSEO_Schema_Website implements WPSEO_Graph_Piece {
 			 */
 			$search_url = apply_filters( 'wpseo_json_ld_search_url', $this->context->site_url . '?s={search_term_string}' );
 
-			$data['potentialAction'][] = [
+			/*
+			 * Created an array of potentialActions because there can occur multiple potentialActions
+			 */
+			$data['potentialAction'][] =
+				[
 				'@type'       => 'SearchAction',
 				'target'      => $search_url,
 				'query-input' => 'required name=search_term_string',
-			];
+				];
 		}
 
 		return $data;
